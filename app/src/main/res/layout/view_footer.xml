@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/bg_activity">
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:gravity="left"
+        android:text="11、The most attractive point of this lesson？"
+        android:textColor="@color/default_title_color"
+        android:textSize="@dimen/textsize_16sp" />
+
+    <EditText
+        android:id="@+id/content1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_60dp"
+        android:layout_marginLeft="@dimen/dimen_35dp"
+        android:layout_marginRight="@dimen/dimen_35dp"
+        android:layout_marginTop="@dimen/dimen_10dp" />
+
+    <TextView
+        android:id="@+id/title2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:layout_marginTop="@dimen/dimen_15dp"
+        android:gravity="left"
+        android:text="12、Comments/Suggestions？"
+        android:textColor="@color/default_title_color"
+        android:textSize="@dimen/textsize_16sp" />
+
+    <EditText
+        android:id="@+id/content2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_60dp"
+        android:layout_marginLeft="@dimen/dimen_35dp"
+        android:layout_marginRight="@dimen/dimen_35dp"
+        android:layout_marginTop="@dimen/dimen_10dp" />
+
+</LinearLayout>

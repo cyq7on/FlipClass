@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_activity"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/rank"
+        android:layout_width="@dimen/dimen_50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/default_title_color"
+        android:textSize="@dimen/textsize_16sp" />
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="@dimen/dimen_50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/default_title_color"
+        android:textSize="@dimen/textsize_16sp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/default_title_color"
+        android:paddingLeft="@dimen/dimen_5dp"
+        android:paddingRight="@dimen/dimen_5dp"
+        android:textSize="@dimen/textsize_16sp" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="@dimen/dimen_50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/default_title_color"
+        android:textSize="@dimen/textsize_16sp" />
+
+</LinearLayout>

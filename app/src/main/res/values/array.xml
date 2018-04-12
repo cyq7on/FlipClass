@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="role">
+        <item>Student</item>
+        <item>Teacher</item>
+    </string-array>
+
+    <string-array name="code">
+        <item>CN6103</item>
+        <item>CN6111</item>
+        <item>CN6104</item>
+        <item>CN6107</item>
+        <item>CN6211</item>
+        <item>CN6204</item>
+    </string-array>
+
+</resources>
