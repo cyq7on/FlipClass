@@ -138,6 +138,7 @@ public class QuestionnaireActivity extends BaseActivity{
                     }
                 }
                 if(mIsFinish){
+                    ToastUtil.getInstance().showToast("success!");
                     Log.v("sstang", "完成了");
                     mRealm.executeTransaction(new Realm.Transaction() {
                         @Override

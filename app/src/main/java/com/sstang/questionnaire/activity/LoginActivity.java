@@ -50,7 +50,7 @@ public class LoginActivity extends BaseActivity{
                 if(TextUtils.isEmpty(name) || TextUtils.isEmpty(pwd)){
                     ToastUtil.getInstance().showToast("ID and password cannot be empty!");
                 }else if(mType == 2){
-                    if("14086102".equals(name) && "19961101".equals(pwd)){
+                    if("1".equals(name) && "1".equals(pwd)){
                         startActivity(new Intent(LoginActivity.this, UserEditActivity.class));
                         finish();
                     }else{

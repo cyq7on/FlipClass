@@ -14,10 +14,10 @@ import android.widget.TextView;
 
 import com.sstang.questionnaire.R;
 import com.sstang.questionnaire.adapter.UserEditAdapter;
-import com.sstang.questionnaire.data.QuestionnaireData;
 import com.sstang.questionnaire.data.SubjectData;
 import com.sstang.questionnaire.data.UserData;
 import com.sstang.questionnaire.eventobj.AddUserObj;
+import com.sstang.questionnaire.util.ToastUtil;
 import com.sstang.questionnaire.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -173,5 +173,6 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         });
+        ToastUtil.getInstance().showToast("success！");
     }
 }
