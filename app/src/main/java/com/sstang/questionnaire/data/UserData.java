@@ -15,4 +15,15 @@ public class UserData extends RealmObject{
     public String mPwd;
     public int mScore;
     public float mTeacherScore;
+
+    public User convert() {
+        User user = new User();
+        user.mUserCode = mUserCode;
+        user.mType = mType;
+        user.mUserName = mUserName;
+        user.mPwd = mPwd;
+        user.mScore = mScore;
+        user.mTeacherScore = mTeacherScore;
+        return user;
+    }
 }

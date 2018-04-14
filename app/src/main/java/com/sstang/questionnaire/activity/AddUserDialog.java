@@ -11,9 +11,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sstang.questionnaire.MyApplocation;
 import com.sstang.questionnaire.R;
-import com.sstang.questionnaire.data.QuestionnaireData;
 import com.sstang.questionnaire.data.UserData;
 import com.sstang.questionnaire.eventobj.AddUserObj;
 import com.sstang.questionnaire.util.ToastUtil;
@@ -109,6 +110,10 @@ public class AddUserDialog extends Dialog implements View.OnClickListener {
                                         realm.copyToRealmOrUpdate(Utils.createData(items[i], user.mUserCode));
                                     }
                                 }
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference myRef = database.getReference("user");
+
+                                myRef.setValue(user.convert());
                             }catch (Exception e){
                                 ToastUtil.getInstance().showToast("Teacher ID and student ID cannot be same!");
                             }

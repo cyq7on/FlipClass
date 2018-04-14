@@ -41,7 +41,7 @@ public class MyApplocation extends Application{
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
 
-        myRef.setValue("Hello, World!");
+        myRef.setValue(Math.random());
     }
 
     public static MyApplocation getApplication() {
