@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sstang.questionnaire.R;
-import com.sstang.questionnaire.data.UserData;
+import com.sstang.questionnaire.data.User;
 
 /**
  * Created by sstang on 2018/4/3.
  */
 
-public class UserEditAdapter extends AdapterBase<UserData>{
+public class UserEditAdapter extends AdapterBase<User>{
 
     public UserEditAdapter(Context context) {
         super(context);
@@ -31,11 +31,11 @@ public class UserEditAdapter extends AdapterBase<UserData>{
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-        UserData userData = getItem(position);
-        if(userData != null){
-            holder.mCodeTv.setText(userData.mUserCode);
-            holder.mNameTv.setText(userData.mUserName);
-            holder.mPwdTv.setText(userData.mPwd);
+        User user = getItem(position);
+        if(user != null){
+            holder.mCodeTv.setText(user.mUserCode);
+            holder.mNameTv.setText(user.mUserName);
+            holder.mPwdTv.setText(user.mPwd);
         }
         return convertView;
     }

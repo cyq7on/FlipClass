@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,20 +13,27 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sstang.questionnaire.R;
 import com.sstang.questionnaire.adapter.UserEditAdapter;
 import com.sstang.questionnaire.data.SubjectData;
+import com.sstang.questionnaire.data.User;
 import com.sstang.questionnaire.data.UserData;
 import com.sstang.questionnaire.eventobj.AddUserObj;
 import com.sstang.questionnaire.util.ToastUtil;
-import com.sstang.questionnaire.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -37,8 +45,8 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
     private ArrayAdapter<CharSequence> mAdapter;
     private UserEditAdapter mEditAdapter;
     private ListView mListView;
-    private RealmList<UserData> mStudentList;
-    private RealmList<UserData> mTeacherList;
+    private List<User> mStudentList = new ArrayList<>();
+    private List<User> mTeacherList = new ArrayList<>();
     private Realm mRealm;
     private Button mAddBtn;
     private TextView mCodeTv;
@@ -49,15 +57,37 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_useredit);
         EventBus.getDefault().register(this);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+                    switch (user.mType) {
+                        case "学生":
+                            mStudentList.add(user);
+                            break;
+                        case "老师":
+                            mTeacherList.add(user);
+                            break;
+                        default:
+                            break;
+                    }
+                    Log.d("user",user.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("test",databaseError.getMessage());
+            }
+        });
         initView();
-        mRealm = Realm.getDefaultInstance();
-        mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
-        mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
     }
 
     @Override
     protected void onDestroy() {
-        mRealm.close();
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -114,7 +144,7 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
                                     mRealm.where(UserData.class).equalTo("mUserCode", mStudentList.get(i).mUserCode).findFirst().deleteFromRealm();
                                 }
                             });
-                            mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
+//                            mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
                             mEditAdapter.addToList(mStudentList);
                         }else{
                             mRealm.executeTransaction(new Realm.Transaction() {
@@ -123,7 +153,7 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
                                     mRealm.where(UserData.class).equalTo("mUserCode", mTeacherList.get(i).mUserCode).findFirst().deleteFromRealm();
                                 }
                             });
-                            mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
+//                            mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
                             mEditAdapter.addToList(mTeacherList);
                         }
                     }
@@ -139,10 +169,10 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(AddUserObj obj){
         if(obj.mType == 0){
-            mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
+//            mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
             mEditAdapter.addToList(mStudentList);
         }else{
-            mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
+//            mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
             mEditAdapter.addToList(mTeacherList);
         }
     }
