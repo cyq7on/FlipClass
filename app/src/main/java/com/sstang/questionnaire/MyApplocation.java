@@ -2,10 +2,7 @@ package com.sstang.questionnaire;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sstang.questionnaire.util.DensityUtil;
 import com.sstang.questionnaire.util.ToastUtil;
 
@@ -36,12 +33,6 @@ public class MyApplocation extends Application{
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(config);
-        Log.d("test","write data");
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue(Math.random());
     }
 
     public static MyApplocation getApplication() {

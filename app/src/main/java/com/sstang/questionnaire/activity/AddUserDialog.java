@@ -111,9 +111,10 @@ public class AddUserDialog extends Dialog implements View.OnClickListener {
                                     }
                                 }
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference myRef = database.getReference("user");
-
-                                myRef.setValue(user.convert());
+                                DatabaseReference myRef = database.getReference("users");
+//                                myRef.setValue(user.convert());
+                                String userId = myRef.push().getKey();
+                                myRef.child(userId).setValue(user.convert());
                             }catch (Exception e){
                                 ToastUtil.getInstance().showToast("Teacher ID and student ID cannot be same!");
                             }
