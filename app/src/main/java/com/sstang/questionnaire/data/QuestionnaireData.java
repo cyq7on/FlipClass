@@ -15,4 +15,16 @@ public class QuestionnaireData extends RealmObject{
     public String mTilte;
     public String mTeacherCode;
     public RealmList<SubjectData> mContents;
+
+    public Questionnaire convert() {
+        Questionnaire questionnaire = new Questionnaire();
+        questionnaire.mKey = mKey;
+        questionnaire.mCode = mCode;
+        questionnaire.mTilte = mTilte;
+        questionnaire.mTeacherCode = mTeacherCode;
+        for (int i = 0; i < mContents.size(); i++) {
+            questionnaire.mContents.add(mContents.get(i).convert());
+        }
+        return questionnaire;
+    }
 }
