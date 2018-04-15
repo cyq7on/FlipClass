@@ -12,4 +12,16 @@ public class Subject {
     public int mScore = 0;
     public int mNum;
     public String mTeacherCode;
+
+    public SubjectData convert() {
+        SubjectData subject = new SubjectData();
+        subject.mCode = mCode;
+        subject.mSubject = mSubject;
+        subject.mTotolScore = mTotolScore;
+        subject.mAverageScore = mAverageScore;
+        subject.mScore = mScore;
+        subject.mNum = mNum;
+        subject.mTeacherCode = mTeacherCode;
+        return subject;
+    }
 }

@@ -78,7 +78,7 @@ public class QuestionnaireActivity extends BaseActivity{
         setTitle("Questionnaire");
         mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
         if(mTeacherList == null || mTeacherList.size() == 0){
-            ToastUtil.getInstance().showToast("Database Error!");
+            ToastUtil.getInstance().showToast("no teachers here");
             finish();
         }
         mSpinner = findViewById(R.id.spinner);
