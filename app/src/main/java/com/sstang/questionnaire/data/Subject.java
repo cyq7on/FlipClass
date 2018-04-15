@@ -24,4 +24,17 @@ public class Subject {
         subject.mTeacherCode = mTeacherCode;
         return subject;
     }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "mCode='" + mCode + '\'' +
+                ", mSubject='" + mSubject + '\'' +
+                ", mTotolScore=" + mTotolScore +
+                ", mAverageScore=" + mAverageScore +
+                ", mScore=" + mScore +
+                ", mNum=" + mNum +
+                ", mTeacherCode='" + mTeacherCode + '\'' +
+                '}';
+    }
 }

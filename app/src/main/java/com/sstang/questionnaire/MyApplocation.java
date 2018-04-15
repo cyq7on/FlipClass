@@ -99,11 +99,12 @@ public class MyApplocation extends Application {
                             @Override
                             public void execute(Realm realm) {
                                 try {
-                                    String items[] = Utils.getClassCode();
+                                    /*String items[] = Utils.getClassCode();
                                     int len = items.length;
                                     for (int i = 0; i < len; i++) {
                                         realm.copyToRealmOrUpdate(questionnaire.convert());
-                                    }
+                                    }*/
+                                    realm.copyToRealmOrUpdate(questionnaire.convert());
 
                                 } catch (Exception e) {
 //                                        ToastUtil.getInstance().showToast("init user data error!");

@@ -14,7 +14,7 @@ public class QuestionnaireData extends RealmObject{
     public String mCode;
     public String mTilte;
     public String mTeacherCode;
-    public RealmList<SubjectData> mContents;
+    public RealmList<SubjectData> mContents = new RealmList<>();
 
     public Questionnaire convert() {
         Questionnaire questionnaire = new Questionnaire();
