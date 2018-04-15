@@ -12,10 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sstang.questionnaire.R;
 import com.sstang.questionnaire.adapter.QuestionnaireAdapter;
 import com.sstang.questionnaire.data.QuestionnaireData;
 import com.sstang.questionnaire.data.SubjectData;
+import com.sstang.questionnaire.data.User;
 import com.sstang.questionnaire.data.UserData;
 import com.sstang.questionnaire.util.ToastUtil;
 import com.sstang.questionnaire.util.Utils;
@@ -24,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 
 /**
  * Created by sstang on 2018/4/3.
@@ -43,7 +48,7 @@ public class QuestionnaireActivity extends BaseActivity{
     private boolean mIsFinish = true;
     private String mStudentId;
     private View mFooterView;
-    private RealmList<UserData> mTeacherList;
+    private List<User> mTeacherList = new ArrayList<>();
     private String mTeacher;
 
     @Override
@@ -74,50 +79,72 @@ public class QuestionnaireActivity extends BaseActivity{
 
     private void initView(){
         setTitle("Questionnaire");
-        mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
-        if(mTeacherList == null || mTeacherList.size() == 0){
-            ToastUtil.getInstance().showToast("Database Error!");
-            finish();
-        }
-        mSpinner = findViewById(R.id.spinner);
-        mSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.code, android.R.layout.simple_spinner_item);
-        mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(mSpinnerAdapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mCode = mClassCodes[i];
-                setData();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+                    if("老师".equals(user.mType)){
+                        mTeacherList.add(user);
+                    }
+                    Log.d("user",user.toString());
+                }
+                if(mTeacherList.size() == 0){
+                    ToastUtil.getInstance().showToast("no teachers here!");
+                    finish();
+                }
+                mSpinner = findViewById(R.id.spinner);
+                mSpinnerAdapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.code, android.R.layout.simple_spinner_item);
+                mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mSpinner.setAdapter(mSpinnerAdapter);
+                mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        mCode = mClassCodes[i];
+                        setData();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+
+                List<CharSequence> code = new ArrayList<>();
+                for (User teacher : mTeacherList){
+                    code.add(teacher.mUserCode + ":" + teacher.mUserName);
+                }
+
+                mSpinner1 = findViewById(R.id.spinner1);
+                mSpinnerAdapter1 = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, code);
+                mSpinnerAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mSpinner1.setAdapter(mSpinnerAdapter1);
+                mSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        mTeacher =  mTeacherList.get(i).mUserCode;
+                        setData();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("test",databaseError.getMessage());
+                ToastUtil.getInstance().showToast("Database Error!");
+                finish();
             }
         });
+//        mTeacherList = Utils.convertUserData(mRealm.where(User.class).equalTo("mType", "老师").findAll());
 
-
-        List<CharSequence> code = new ArrayList<>();
-        for (UserData teacher : mTeacherList){
-            code.add(teacher.mUserCode + ":" + teacher.mUserName);
-        }
-
-        mSpinner1 = findViewById(R.id.spinner1);
-        mSpinnerAdapter1 = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item, code);
-        mSpinnerAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner1.setAdapter(mSpinnerAdapter1);
-        mSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mTeacher =  mTeacherList.get(i).mUserCode;
-                setData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         mListView = findViewById(R.id.listview);
         mFooterView = LayoutInflater.from(this).inflate(R.layout.view_footer, null);
@@ -140,6 +167,10 @@ public class QuestionnaireActivity extends BaseActivity{
                 if(mIsFinish){
                     ToastUtil.getInstance().showToast("success!");
                     Log.v("sstang", "完成了");
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("questionnaire");
+                    String userId = myRef.push().getKey();
+                    myRef.child(userId).setValue(mQuestionnaireData.convert());
                     mRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
