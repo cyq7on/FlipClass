@@ -117,13 +117,13 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
 
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                         String userCode = mType == 0 ? mStudentList.get(i).mUserCode:mTeacherList.get(i).mUserCode;
-                        Query applesQuery = ref.child("users").orderByChild("mUserCode").equalTo(userCode);
+                        Query query = ref.child("users").orderByChild("mUserCode").equalTo(userCode);
 
-                        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
-                                    appleSnapshot.getRef().removeValue();
+                                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                                    snapshot.getRef().removeValue();
                                 }
 
                                 if(mType == 0){
