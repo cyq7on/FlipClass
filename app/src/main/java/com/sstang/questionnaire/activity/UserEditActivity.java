@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.sstang.questionnaire.R;
 import com.sstang.questionnaire.adapter.UserEditAdapter;
 import com.sstang.questionnaire.data.SubjectData;
@@ -107,25 +114,46 @@ public class UserEditActivity extends BaseActivity implements View.OnClickListen
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int n) {
-                        if(mType == 0){
-                            mRealm.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    mRealm.where(UserData.class).equalTo("mUserCode", mStudentList.get(i).mUserCode).findFirst().deleteFromRealm();
+
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                        String userCode = mType == 0 ? mStudentList.get(i).mUserCode:mTeacherList.get(i).mUserCode;
+                        Query applesQuery = ref.child("users").orderByChild("mUserCode").equalTo(userCode);
+
+                        applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                                    appleSnapshot.getRef().removeValue();
                                 }
-                            });
-                            mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
-                            mEditAdapter.addToList(mStudentList);
-                        }else{
-                            mRealm.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    mRealm.where(UserData.class).equalTo("mUserCode", mTeacherList.get(i).mUserCode).findFirst().deleteFromRealm();
+
+                                if(mType == 0){
+                                    mRealm.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            mRealm.where(UserData.class).equalTo("mUserCode", mStudentList.get(i).mUserCode).findFirst().deleteFromRealm();
+                                        }
+                                    });
+                                    mStudentList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "学生").findAll());
+                                    mEditAdapter.addToList(mStudentList);
+                                }else{
+                                    mRealm.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            mRealm.where(UserData.class).equalTo("mUserCode", mTeacherList.get(i).mUserCode).findFirst().deleteFromRealm();
+                                        }
+                                    });
+                                    mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
+                                    mEditAdapter.addToList(mTeacherList);
                                 }
-                            });
-                            mTeacherList = Utils.convertUserData(mRealm.where(UserData.class).equalTo("mType", "老师").findAll());
-                            mEditAdapter.addToList(mTeacherList);
-                        }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.e("del", "onCancelled", databaseError.toException());
+                                ToastUtil.getInstance().showToast("Delete fail!");
+                            }
+                        });
+
                     }
                 });
                 builder.setNegativeButton("Cancel", null);

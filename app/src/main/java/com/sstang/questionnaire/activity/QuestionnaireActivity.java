@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sstang.questionnaire.R;
 import com.sstang.questionnaire.adapter.QuestionnaireAdapter;
 import com.sstang.questionnaire.data.QuestionnaireData;
@@ -140,6 +142,10 @@ public class QuestionnaireActivity extends BaseActivity{
                 if(mIsFinish){
                     ToastUtil.getInstance().showToast("success!");
                     Log.v("sstang", "完成了");
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("questionnaire");
+                    String userId = myRef.push().getKey();
+                    myRef.child(userId).setValue(mQuestionnaireData.convert());
                     mRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
