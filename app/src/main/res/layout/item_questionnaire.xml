@@ -17,7 +17,7 @@
         android:textColor="@color/default_title_color"
         android:textSize="@dimen/textsize_16sp" />
 
-    <com.sstang.questionnaire.widget.RatingBarView
+    <com.hmz.flipclass.widget.RatingBarView
         android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

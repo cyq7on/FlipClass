@@ -4,7 +4,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.sstang.questionnaire"
+        applicationId "com.hmz.flipclass"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1

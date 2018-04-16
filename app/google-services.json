@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:654556312768:android:712dd7b3028da0f6",
         "android_client_info": {
-          "package_name": "com.sstang.questionnaire"
+          "package_name": "com.hmz.flipclass"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "654556312768-v7v5ie8npsuto50uh091a2dic6q2j4hb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sstang.questionnaire",
+            "package_name": "com.hmz.flipclass",
             "certificate_hash": "9c0ab96a657151aa25ab37de710a1de96d560f3c"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "654556312768-p8iacnsikvddk1gg88vqgsftn9hbcn1s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.sstang.questionnaire",
+            "package_name": "com.hmz.flipclass",
             "certificate_hash": "c08c8f52a0e6a33567f6053b68dce2ddf73cb667"
           }
         },
