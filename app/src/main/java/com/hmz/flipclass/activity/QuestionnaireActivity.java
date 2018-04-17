@@ -147,28 +147,7 @@ public class QuestionnaireActivity extends BaseActivity{
                 if(mIsFinish){
                     ToastUtil.getInstance().showToast("success!");
                     Log.v("sstang", "完成了");
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("questionnaire");
-                    final String userId = myRef.push().getKey();
-                    myRef.child(userId).setValue(mQuestionnaireData.convert());
-                    final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    Query queryUser = ref.child("users").orderByChild("mUserCode").equalTo(mStudentId);
-                    queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                User user = snapshot.getValue(User.class);
-                                user.mScore += 1;
-                                ref.child("users").child(snapshot.getKey()).setValue(user);
-                                Log.d("questionnaire", user.toString());
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
                     mRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -176,8 +155,31 @@ public class QuestionnaireActivity extends BaseActivity{
                             for(SubjectData content : mQuestionnaireData.mContents){
                                 content.mTotolScore += content.mScore;
                                 content.mNum += 1;
-                                content.mAverageScore = content.mTotolScore / (float)content.mNum;
+                                content.mAverageScore = content.mTotolScore / content.mNum;
                             }
+
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("questionnaire");
+                            final String userId = myRef.push().getKey();
+                            myRef.child(userId).setValue(mQuestionnaireData.convert());
+                            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                            Query queryUser = ref.child("users").orderByChild("mUserCode").equalTo(mStudentId);
+                            queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        User user = snapshot.getValue(User.class);
+                                        user.mScore += 1;
+                                        ref.child("users").child(snapshot.getKey()).setValue(user);
+                                        Log.d("questionnaire", user.toString());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     });
                     finish();
