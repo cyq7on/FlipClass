@@ -71,6 +71,8 @@ public class MyApplocation extends Application {
                                 UserData userData = realm.createObject(UserData.class, user.mUserCode.trim());
                                 userData.mUserName = user.mUserName.trim();
                                 userData.mPwd = user.mPwd.trim();
+                                userData.mScore = user.mScore;
+                                userData.mTeacherScore = user.mTeacherScore;
                                 if ("学生".equals(user.mType)) {
                                     userData.mType = "学生";
                                 } else {
