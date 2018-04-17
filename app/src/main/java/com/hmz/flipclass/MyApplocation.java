@@ -46,81 +46,89 @@ public class MyApplocation extends Application {
                 .build();
         Realm.setDefaultConfiguration(config);
         mRealm = Realm.getDefaultInstance();
-        if (mRealm.isEmpty()) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            Query queryUser = ref.child("users");
-            queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        final User user = snapshot.getValue(User.class);
-                        Log.d("init", user.toString());
-                        mRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                try {
-                                    UserData userData = realm.createObject(UserData.class, user.mUserCode.trim());
-                                    userData.mUserName = user.mUserName.trim();
-                                    userData.mPwd = user.mPwd.trim();
-                                    if ("学生".equals(user.mType)) {
-                                        userData.mType = "学生";
-                                    } else {
-                                        userData.mType = "老师";
-                                        String items[] = Utils.getClassCode();
-                                        int len = items.length;
-                                        for (int i = 0; i < len; i++) {
-                                            realm.copyToRealmOrUpdate(Utils.createData(items[i], userData.mUserCode));
-                                        }
-                                    }
 
-                                } catch (Exception e) {
-//                                        ToastUtil.getInstance().showToast("init user data error!");
-                                    Log.e("init", e.getMessage());
-                                }
-                            }
-                        });
-                    }
-                }
-
+        if(!mRealm.isEmpty()){
+            mRealm.executeTransaction(new Realm.Transaction() {
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    ToastUtil.getInstance().showToast("init user data error!");
+                public void execute(Realm realm) {
+                    mRealm.deleteAll();
                 }
             });
+        }
 
-            Query queryQuestionnaire = ref.child("questionnaire");
-            queryQuestionnaire.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        final Questionnaire questionnaire = snapshot.getValue(Questionnaire.class);
-                        Log.d("init", questionnaire.toString());
-                        mRealm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                try {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Query queryUser = ref.child("users");
+        queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    final User user = snapshot.getValue(User.class);
+                    Log.d("init", user.toString());
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            try {
+                                UserData userData = realm.createObject(UserData.class, user.mUserCode.trim());
+                                userData.mUserName = user.mUserName.trim();
+                                userData.mPwd = user.mPwd.trim();
+                                if ("学生".equals(user.mType)) {
+                                    userData.mType = "学生";
+                                } else {
+                                    userData.mType = "老师";
+                                    String items[] = Utils.getClassCode();
+                                    int len = items.length;
+                                    for (int i = 0; i < len; i++) {
+                                        realm.copyToRealmOrUpdate(Utils.createData(items[i], userData.mUserCode));
+                                    }
+                                }
+
+                            } catch (Exception e) {
+//                                        ToastUtil.getInstance().showToast("init user data error!");
+                                Log.e("init", e.getMessage());
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                ToastUtil.getInstance().showToast("init user data error!");
+            }
+        });
+
+        Query queryQuestionnaire = ref.child("questionnaire");
+        queryQuestionnaire.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    final Questionnaire questionnaire = snapshot.getValue(Questionnaire.class);
+                    Log.d("init", questionnaire.toString());
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            try {
                                     /*String items[] = Utils.getClassCode();
                                     int len = items.length;
                                     for (int i = 0; i < len; i++) {
                                         realm.copyToRealmOrUpdate(questionnaire.convert());
                                     }*/
-                                    realm.copyToRealmOrUpdate(questionnaire.convert());
+                                realm.copyToRealmOrUpdate(questionnaire.convert());
 
-                                } catch (Exception e) {
+                            } catch (Exception e) {
 //                                        ToastUtil.getInstance().showToast("init user data error!");
-                                    Log.e("init", e.getMessage());
-                                }
+                                Log.e("init", e.getMessage());
                             }
-                        });
-                    }
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    ToastUtil.getInstance().showToast("init user data error!");
-                }
-            });
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                ToastUtil.getInstance().showToast("init user data error!");
+            }
+        });
     }
 
     public static MyApplocation getApplication() {

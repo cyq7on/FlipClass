@@ -12,12 +12,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.hmz.flipclass.R;
 import com.hmz.flipclass.adapter.QuestionnaireAdapter;
 import com.hmz.flipclass.data.QuestionnaireData;
 import com.hmz.flipclass.data.SubjectData;
+import com.hmz.flipclass.data.User;
 import com.hmz.flipclass.data.UserData;
 import com.hmz.flipclass.util.ToastUtil;
 import com.hmz.flipclass.util.Utils;
@@ -144,8 +149,26 @@ public class QuestionnaireActivity extends BaseActivity{
                     Log.v("sstang", "完成了");
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("questionnaire");
-                    String userId = myRef.push().getKey();
+                    final String userId = myRef.push().getKey();
                     myRef.child(userId).setValue(mQuestionnaireData.convert());
+                    final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    Query queryUser = ref.child("users").orderByChild("mUserCode").equalTo(mStudentId);
+                    queryUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                User user = snapshot.getValue(User.class);
+                                user.mScore += 1;
+                                ref.child("users").child(snapshot.getKey()).setValue(user);
+                                Log.d("questionnaire", user.toString());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     mRealm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
